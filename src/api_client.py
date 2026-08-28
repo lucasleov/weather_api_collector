@@ -6,14 +6,15 @@ WEATHER_URL = 'https://api.open-meteo.com/v1/forecast'
 
 
 
-def get_city_list(name: str):
+def get_city_list(name: str) -> list:
     params = {'name' : name, 'language' : 'en', 'format' : 'json'}
     response = requests.get(GEOCODE_URL, params=params, timeout=5)
     response_json = response.json()
-    return response_json
+
+    return response_json['results']
 
 
-def get_weather_forecast(chosen_city: dict, forecast_days: int) -> None:
+def get_weather_forecast(chosen_city: dict, forecast_days: int) -> dict | None:
     latitude = chosen_city['latitude']
     longitude = chosen_city['longitude']
     timezone = chosen_city['timezone']
@@ -36,10 +37,10 @@ def get_weather_forecast(chosen_city: dict, forecast_days: int) -> None:
         response = requests.get(WEATHER_URL, params=params, timeout=5)
     except requests.exceptions.ConnectionError:
         print("A Connection error occurred.")
-        return False
+        return None
     except requests.exceptions.Timeout:
         print("The server took too long.")
-        return False
+        return None
     print(f"\nStatus code: {response.status_code}")
         
     try :
@@ -47,4 +48,4 @@ def get_weather_forecast(chosen_city: dict, forecast_days: int) -> None:
         return response.json()
     except requests.exceptions.HTTPError:
         print("An HTTP Error occurred.")
-        return False
+        return None

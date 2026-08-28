@@ -1,6 +1,6 @@
 
 
-def print_city_list(city_list: list):
+def print_city_list(city_list: list) -> None:
     for index, city in enumerate(city_list):
         print(f"""{index+1}:
 Name: {city['name']}
@@ -11,7 +11,7 @@ Longitude: {city['longitude']}
             """)
 
 
-def print_forecast(response_json: dict):
+def print_forecast(response_json: dict) -> None:
     useful_data = response_json['daily']
     unit_list = response_json['daily_units']
 
@@ -22,7 +22,7 @@ def print_forecast(response_json: dict):
                 print (f"{get_data_name(data)}: {useful_data[data][index]} {unit_list[data]}")
 
 
-def get_data_name(data_type):
+def get_data_name(data_type: str) -> str:
     if data_type == 'time':
         data_name = 'Date'
     elif data_type == 'temperature_2m_max':
@@ -42,7 +42,7 @@ def get_data_name(data_type):
     return data_name
 
 
-def get_chosen_city_data(city_list: list, chosen_index: int):
+def get_chosen_city_data(city_list: list, chosen_index: int) -> dict:
     name = city_list[chosen_index]['name']
     country_code = city_list[chosen_index]['country_code']
     country = city_list[chosen_index]['country']

@@ -8,12 +8,11 @@ def main() -> None:
     
     city_list = get_city_list(input('Digite o nome da cidade: '))
     
-    print_city_list(city_list['results'])
+    print_city_list(city_list)
     
     city_index = int(input("Choose the city: "))-1
     
-    chosen_city = get_chosen_city_data(city_list['results'], city_index)
-    print(chosen_city)
+    chosen_city = get_chosen_city_data(city_list, city_index)
     
     number_of_days = int(input("\nInform the number of days for the forecast: "))
     
