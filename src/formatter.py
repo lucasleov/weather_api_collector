@@ -1,5 +1,3 @@
-
-
 def print_city_list(city_list: list) -> None:
     for index, city in enumerate(city_list):
         print(f"""{index+1}:
@@ -12,14 +10,24 @@ Longitude: {city['longitude']}
 
 
 def print_forecast(response_json: dict) -> None:
-    useful_data = response_json['daily']
+
+    parsed_data = parse_weather_response(response_json)
     unit_list = response_json['daily_units']
 
-    for index, date in enumerate(useful_data['time']):
-        print(f"\nForecast for the day: {date}\n")
-        for data in useful_data:
-            if data != "time":
-                print (f"{get_data_name(data)}: {useful_data[data][index]} {unit_list[data]}")
+    for day in parsed_data:
+        print(f'\nForecast for the day: {day["time"]}\n')
+        for data, value in day.items():
+            if data != 'time':
+                print (f"{get_data_name(data)}: {value} {unit_list[data]}")
+    
+
+def parse_weather_response(response_json: dict) -> list:
+    useful_data = response_json['daily']
+
+    return [
+        {key : useful_data[key][index] for key in useful_data}
+            for index in range(len(useful_data['time']))
+        ]
 
 
 def get_data_name(data_type: str) -> str:
@@ -55,3 +63,17 @@ def get_chosen_city_data(city_list: list, chosen_index: int) -> dict:
             'timezone' : timezone,
             'latitude' : latitude,
             'longitude' : longitude}
+
+if __name__ == '__main__':
+    sample = {
+        'daily' : {
+            'time': ['2026-09-01', '2026-09-02'],
+            'temperature_2m_max': [29.2, 28.3],
+            'temperature_2m_min': [19.2, 18.3]},
+        'daily_units' : {
+            'temperature_2m_max' : 'ºC',
+            'temperature_2m_min' : 'ºC'}
+        }
+
+    print_forecast(sample)
+            

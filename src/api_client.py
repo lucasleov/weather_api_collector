@@ -15,11 +15,16 @@ def get_city_list(name: str) -> list:
 
 
 def get_weather_forecast(chosen_city: dict, forecast_days: int) -> dict | None:
+    params = build_weather_params(chosen_city, forecast_days)
+    
+    return fetch_weather(params)
+
+def build_weather_params(chosen_city: dict, forecast_days: int) -> dict:
     latitude = chosen_city['latitude']
     longitude = chosen_city['longitude']
     timezone = chosen_city['timezone']
 
-    params = {
+    return {
     'latitude' : latitude,
     'longitude' : longitude,
     'daily' : ['temperature_2m_max',
@@ -32,7 +37,8 @@ def get_weather_forecast(chosen_city: dict, forecast_days: int) -> dict | None:
     'timezone' : timezone,
     'forecast_days' : forecast_days
     }
-    
+
+def fetch_weather(params: dict) -> dict | None:
     try:
         response = requests.get(WEATHER_URL, params=params, timeout=5)
     except requests.exceptions.ConnectionError:
