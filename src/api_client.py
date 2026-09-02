@@ -8,16 +8,21 @@ WEATHER_URL = 'https://api.open-meteo.com/v1/forecast'
 
 def get_city_list(name: str) -> list:
     params = {'name' : name, 'language' : 'en', 'format' : 'json'}
-    response = requests.get(GEOCODE_URL, params=params, timeout=5)
-    response_json = response.json()
+    response_json = fetch_response(GEOCODE_URL, params)
 
-    return response_json['results']
+    if type(response_json) == dict:
+        return response_json.get('results')
+    elif type(response_json) == str:
+        return response_json
+    else:
+        return None
 
 
 def get_weather_forecast(chosen_city: dict, forecast_days: int) -> dict | None:
     params = build_weather_params(chosen_city, forecast_days)
+
     
-    return fetch_weather(params)
+    return fetch_response(WEATHER_URL, params)
 
 def build_weather_params(chosen_city: dict, forecast_days: int) -> dict:
     latitude = chosen_city['latitude']
@@ -38,20 +43,17 @@ def build_weather_params(chosen_city: dict, forecast_days: int) -> dict:
     'forecast_days' : forecast_days
     }
 
-def fetch_weather(params: dict) -> dict | None:
+def fetch_response(url: str, params: dict) -> dict | None:
     try:
-        response = requests.get(WEATHER_URL, params=params, timeout=5)
+        response = requests.get(url, params=params, timeout=5)
     except requests.exceptions.ConnectionError:
-        print("A Connection error occurred.")
-        return None
+        return "A Connection error occurred."
     except requests.exceptions.Timeout:
-        print("The server took too long.")
-        return None
+        return "The server took too long."
     print(f"\nStatus code: {response.status_code}")
         
     try :
         response.raise_for_status()
         return response.json()
     except requests.exceptions.HTTPError:
-        print("An HTTP Error occurred.")
-        return None
+        return "An HTTP Error has occurred"

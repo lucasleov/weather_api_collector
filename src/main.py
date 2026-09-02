@@ -5,10 +5,19 @@ from formatter import (print_city_list,
 
 
 def main() -> None:
-    
-    city_list = get_city_list(input('Digite o nome da cidade: '))
-    
-    print_city_list(city_list)
+
+    while True:
+        city_name = input('Inform the name of the city: ')
+        city_list = get_city_list(city_name)
+
+        if type(city_list) == list:
+            print_city_list(city_list)
+            break
+        elif city_list:
+            print(city_list)
+            exit()
+        else:
+            print(f'No results have been found for "{city_name}".\n')
     
     city_index = int(input("Choose the city: "))-1
     
@@ -18,9 +27,11 @@ def main() -> None:
     
     response_json = get_weather_forecast(chosen_city, number_of_days)
 
-    if response_json:
+    if type(response_json) == dict:
         print_forecast(response_json)
     else:
+        if response_json:
+            print(response_json)
         print("Could not complete task.")
 
 

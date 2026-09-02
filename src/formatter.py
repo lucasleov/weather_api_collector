@@ -63,17 +63,4 @@ def get_chosen_city_data(city_list: list, chosen_index: int) -> dict:
             'timezone' : timezone,
             'latitude' : latitude,
             'longitude' : longitude}
-
-if __name__ == '__main__':
-    sample = {
-        'daily' : {
-            'time': ['2026-09-01', '2026-09-02'],
-            'temperature_2m_max': [29.2, 28.3],
-            'temperature_2m_min': [19.2, 18.3]},
-        'daily_units' : {
-            'temperature_2m_max' : 'ºC',
-            'temperature_2m_min' : 'ºC'}
-        }
-
-    print_forecast(sample)
             
