@@ -47,6 +47,8 @@ def get_data_name(data_type: str) -> str:
         data_name = 'Wind Speed'
     elif data_type == 'wind_direction_10m_dominant':
         data_name = 'Wind Direction'
+    else:
+        data_name = data_type
     return data_name
 
 
