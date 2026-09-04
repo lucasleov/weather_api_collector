@@ -38,23 +38,27 @@ Open-Meteo Forecast API
 
 
 
-→ Searches for a city
+→ Searches for cities using Geocoding API
 
 → Lists possible locations
 
-→ Selecting a city
+→ Handles searches with no results
 
-→ Searches the forecast
+→ Retrieves weather forecasts
 
-→ Possibility to choose the amount of days for the forecast
+→ User-defined forecast window
 
 → Shows temperature and apparent temperature
 
 → Shows precipitation
 
-→ Shows wind speed
+→ Shows wind speed and direction
 
-→ Basic error handling
+→ Basic API error handling
+
+→ Separated API/data formatting responsibilities
+
+→ Automated tests for data transformation
 
 
 
@@ -64,15 +68,11 @@ Open-Meteo Forecast API
 
 → Input validation
 
-→ No results handling
-
-→ Geocoding error handling
-
 → Persistence of already consulted cities
 
-→ Unit testing
-
 → CLI menu and improvements
+
+→ broader error handling / response validation
 
 
 
@@ -80,13 +80,13 @@ Open-Meteo Forecast API
 
 
 
-weather_api_collector/
+weather\_api\_collector/
 
 ├── data/
 
 ├── src/
 
-│   ├── api_client.py
+│   ├── api\_client.py
 
 │   ├── formatter.py
 
@@ -106,7 +106,7 @@ Where:
 
 
 
-api_client.py → communication with the APIs
+api\_client.py → communication with the APIs
 
 formatter.py → data formatting
 
@@ -116,8 +116,66 @@ storage.py → data persistence
 
 
 
+## Example
+
+
+
+```text
+Inform the name of the city: Villeurbanne
+
+
+1:
+Name: Villeurbanne
+Country: FR, France
+Timezone: Europe/Paris
+Latitude: 45.76601
+Longitude: 4.8795
+
+Choose the city: 1
+
+Inform the number of days for the forecast: 1
+
+
+Forecast for the day: 2026-09-04
+
+Max Temperature: 34.4 °C
+Min Temperature: 18.5 °C
+Max Apparent Temperature: 34.2 °C
+Min Apparent Temperature: 19.2 °C
+Precipitation: 0.0 mm
+Wind Speed: 5.6 km/h
+Wind Direction: 56 °
+```
+
+
+
+## Tests
+
+
+
+Run:
+
+```bash
+python -m pytest -v
+```
+
+
+
+Current automated tests cover:
+
+
+
+- weather request parameter construction;
+
+- weather response parsing;
+
+- weather data label formatting.
+
+
+
 ## Status
 
 
 
 Work in progress — initial API integration and modular structure completed.
+
