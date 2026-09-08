@@ -18,7 +18,7 @@ def get_city_list(name: str) -> list:
         return None
 
 
-def get_weather_forecast(chosen_city: dict, forecast_days: int) -> dict | None:
+def get_weather_forecast(chosen_city: dict, forecast_days: int) -> dict | str:
     params = build_weather_params(chosen_city, forecast_days)
 
     
@@ -43,17 +43,19 @@ def build_weather_params(chosen_city: dict, forecast_days: int) -> dict:
     'forecast_days' : forecast_days
     }
 
-def fetch_response(url: str, params: dict) -> dict | None:
+def fetch_response(url: str, params: dict) -> dict | str:
     try:
         response = requests.get(url, params=params, timeout=5)
-    except requests.exceptions.ConnectionError:
-        return "A Connection error occurred."
+        response.raise_for_status()
+        print(f"\nStatus code: {response.status_code}")
+        return response.json()
     except requests.exceptions.Timeout:
         return "The server took too long."
-    print(f"\nStatus code: {response.status_code}")
-        
-    try :
-        response.raise_for_status()
-        return response.json()
+    except requests.exceptions.ConnectionError:
+        return "A Connection error has occurred."
     except requests.exceptions.HTTPError:
-        return "An HTTP Error has occurred"
+        return "An HTTP error has occurred"
+    except requests.exceptions.JSONDecodeError:
+        return "A Decoding error has occurred."
+    except requests.exceptions.RequestException as e:
+        return f"An unexpected error has occurred: {type(e).__name__}: {e}" 

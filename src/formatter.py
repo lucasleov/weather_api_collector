@@ -29,6 +29,37 @@ def parse_weather_response(response_json: dict) -> list:
             for index in range(len(useful_data['time']))
         ]
 
+def validate_weather_data(response: dict) -> bool:
+    if not type(response) == dict:
+        return False
+    
+    if not response.get('daily') or not response.get('daily_units'):
+        return False
+    
+    mandatory_fields = ['time',
+                        'temperature_2m_max',
+                        'temperature_2m_min',
+                        'apparent_temperature_max',
+                        'apparent_temperature_min',
+                        'precipitation_sum',
+                        'wind_speed_10m_max',
+                        'wind_direction_10m_dominant']
+    
+    for i in mandatory_fields:
+        if not response['daily'].get(i) or not response['daily_units'].get(i):
+            return False
+        
+    number_of_days = len(response['daily']['time'])
+    
+    if number_of_days == 0:
+        return False
+    
+    for i in mandatory_fields:
+        if not len(response['daily'][i]) == number_of_days:
+            return False
+        
+    return True
+
 
 def get_data_name(data_type: str) -> str:
     if data_type == 'time':

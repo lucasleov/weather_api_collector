@@ -1,6 +1,7 @@
 from api_client import (get_city_list, get_weather_forecast,)
 from formatter import (print_city_list,
                        get_chosen_city_data,
+                       validate_weather_data,
                        print_forecast,)
 
 
@@ -27,10 +28,10 @@ def main() -> None:
     
     response_json = get_weather_forecast(chosen_city, number_of_days)
 
-    if type(response_json) == dict:
+    if validate_weather_data(response_json):
         print_forecast(response_json)
     else:
-        if response_json:
+        if type(response_json) == str:
             print(response_json)
         print("Could not complete task.")
 
