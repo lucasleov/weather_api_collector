@@ -3,9 +3,11 @@ from formatter import (print_city_list,
                        get_chosen_city_data,
                        validate_weather_data,
                        print_forecast,)
+from storage import (initialize_database, save_city, get_saved_cities,)
 
 
 def main() -> None:
+    initialize_database()
 
     while True:
         city_name = input('Inform the name of the city: ')
@@ -34,6 +36,9 @@ def main() -> None:
         if type(response_json) == str:
             print(response_json)
         print("Could not complete task.")
+
+    if input("\nDo you wish to register the city? [y/n]: ").strip() == 'y':
+        save_city(chosen_city)
 
 
 if __name__ == '__main__':
