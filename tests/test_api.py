@@ -1,5 +1,5 @@
 import pytest
-from src import (api_client, formatter,)
+from src import (api_client, formatter, storage)
 
 def test_build_weather_params() -> None:
     sample_city_name = "Test City"
@@ -134,3 +134,48 @@ def test_validate_incompatible_arrays() -> None:
                            }
 
     assert formatter.validate_weather_data(incomplete_daily_response) == False
+
+
+def test_format_weather_summary() -> None:
+    response_json = {'daily': {'time': ['2026-09-08'],
+                                     'temperature_2m_max' : [36.4],
+                                     'temperature_2m_min' : [20.5],
+                                     'precipitation_sum' : [0.1],
+                                     'wind_speed_10m_max' : [26.6]
+                                     },
+                           'daily_units': {'time': 'iso8601',
+                                           'temperature_2m_max': 'ºC',
+                                           'temperature_2m_min': 'ºC',
+                                           'precipitation_sum': 'mm',
+                                           'wind_speed_10m_max': 'km/h'
+                                           }
+                           }
+    expected_summary = '\nForecast for the day: 2026-09-08\n\nMax Temperature: 36.4 ºC\nMin Temperature: 20.5 ºC\nPrecipitation: 0.1 mm\nWind Speed: 26.6 km/h\n'
+    assert formatter.format_weather_summary(response_json) == expected_summary
+
+ 
+def test_database(tmp_path) -> None:
+    database_path = tmp_path / "weather_api.db"
+
+    test_city = {'name' : "Test City",
+                 'country_code' : 'TC',
+                 'country' : 'Test Country',
+                 'timezone' : "Test Timezone",
+                 'latitude' : 10.5,
+                 'longitude' : -20.5}
+
+    storage.initialize_database(database_path)
+
+    storage.save_city(test_city, database_path)
+    storage.save_city(test_city, database_path)
+
+    stored_data = storage.get_saved_cities(database_path)
+
+    assert len(stored_data) == 1
+    assert stored_data == [{'id': 1,
+                            'name': 'Test City',
+                            'country_code': 'TC',
+                            'country': 'Test Country',
+                            'timezone': 'Test Timezone',
+                            'latitude': 10.5,
+                            'longitude': -20.5}]

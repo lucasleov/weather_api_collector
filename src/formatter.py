@@ -9,16 +9,20 @@ Longitude: {city['longitude']}
             """)
 
 
-def print_forecast(response_json: dict) -> None:
+def format_weather_summary(response_json: dict) -> str:
 
     parsed_data = parse_weather_response(response_json)
     unit_list = response_json['daily_units']
+    weather_summary = ""
 
     for day in parsed_data:
-        print(f'\nForecast for the day: {day["time"]}\n')
+        weather_summary += f'\nForecast for the day: {day["time"]}\n'
         for data, value in day.items():
             if data != 'time':
-                print (f"{get_data_name(data)}: {value} {unit_list[data]}")
+                weather_summary += f"\n{get_data_name(data)}: {value} {unit_list[data]}"
+        weather_summary += "\n"
+
+    return weather_summary
     
 
 def parse_weather_response(response_json: dict) -> list:
