@@ -14,7 +14,7 @@ Work in progress.
 
 
 
-This project was created with the goal to practice use of APIs, requests, json and data processing, as well as consolidate error handling, code modularization, data persistence and unit testing.
+This project was created with the goal to practice use of APIs, requests, JSON and data processing, as well as consolidate error handling, code modularization, data persistence and unit testing.
 
 
 
@@ -44,7 +44,7 @@ Open-Meteo Forecast API
 
 → Handles searches with no results
 
-→ Retrieves weather forecasts
+→ Retrieves weather forecast for chosen location
 
 → User-defined forecast window
 
@@ -54,11 +54,19 @@ Open-Meteo Forecast API
 
 → Shows wind speed and direction
 
-→ Basic API error handling
+→ API error handling
 
-→ Separated API/data formatting responsibilities
+→ Weather API response validation
 
-→ Automated tests for data transformation
+→ Invalid/incomplete API response handling
+
+→ SQLite persistence for saved cities
+
+→ Duplicate city protection
+
+→ Weather summary formatting
+
+→ Automated tests with temporary SQLite database
 
 
 
@@ -68,11 +76,11 @@ Open-Meteo Forecast API
 
 → Input validation
 
-→ Persistence of already consulted cities
-
 → CLI menu and improvements
 
-→ broader error handling / response validation
+→ Use saved cities for new forecasts
+
+→ Final refactoring and documentation
 
 
 
@@ -96,6 +104,8 @@ weather\_api\_collector/
 
 ├── tests/
 
+│   └── test_api.py
+
 ├── README.md
 
 └── requirements.txt
@@ -110,10 +120,11 @@ api\_client.py → communication with the APIs
 
 formatter.py → data formatting
 
-main.py → Application flow
+main.py → application flow
 
 storage.py → data persistence
 
+test_api.py -> automated tests
 
 
 ## Example
@@ -161,6 +172,10 @@ python -m pytest -v
 
 
 
+9 automated tests currently passing.
+
+
+
 Current automated tests cover:
 
 
@@ -169,7 +184,33 @@ Current automated tests cover:
 
 - weather response parsing;
 
-- weather data label formatting.
+- weather data label formatting;
+
+- weather response validation;
+
+- missing and inconsistent weather data;
+
+- weather summary formatting;
+
+- SQLite city persistence;
+
+- duplicate city protection.
+
+
+
+## Limitations
+
+
+
+- saved cities are stored but cannot yet be selected from the CLI;
+
+- user inputs still have limited validation;
+
+- API errors are handled, but the error/result contract can still be improved;
+
+- the application is CLI-only;
+
+- forecasts are not cached or stored.
 
 
 
@@ -177,5 +218,5 @@ Current automated tests cover:
 
 
 
-Work in progress — initial API integration and modular structure completed.
+Work in progress — API integration, response validation, SQLite persistence and automated testing implemented.
 
