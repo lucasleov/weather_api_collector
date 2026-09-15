@@ -1,4 +1,5 @@
 def print_city_list(city_list: list) -> None:
+    print()
     for index, city in enumerate(city_list):
         print(f"""{index+1}:
 Name: {city['name']}
