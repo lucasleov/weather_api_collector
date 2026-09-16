@@ -6,7 +6,7 @@ WEATHER_URL = 'https://api.open-meteo.com/v1/forecast'
 
 
 
-def get_city_list(name: str) -> list:
+def get_city_list(name: str) -> list | str | None:
     params = {'name' : name, 'language' : 'en', 'format' : 'json'}
     response_json = fetch_response(GEOCODE_URL, params)
 

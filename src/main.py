@@ -16,60 +16,50 @@ def main() -> None:
     initialize_database(DATABASE_PATH)
 
     while True:
-        while True:
-            main_menu()
+        main_menu()
 
-            choice = input("Select an option: ").strip()
+        choice = input("Select an option: ").strip()
 
-            try:
-                choice = int(choice)
+        try:
+            choice = int(choice)
 
-                match choice:
+            match choice:
 
-                    case 1:
-                        city_name = input('\nInform the name of the city: ')
-                        city_list = get_city_list(city_name)
+                case 1:
+                    city_list = search_city_flow()
 
-                        if type(city_list) == list:
-                            chosen_city = forecast_flow(city_list)
-                            if chosen_city is None:
-                                continue
-                            if input("Do you wish to register the city? [y/n]: ").strip() == 'y':
-                                save_city(chosen_city, DATABASE_PATH)
-                            break
-                        elif city_list:
-                            print(city_list)
-                            input("\nPress Enter to go back to menu")
-                        else:
-                            print(f'No results have been found for "{city_name}".\n')
-                            input("\nPress Enter to go back to menu")
+                    if city_list:
+                        chosen_city = forecast_flow(city_list)
+                        if chosen_city is None:
+                            continue
+                        save_city_flow(chosen_city)
+                    else:
+                        continue
 
-                    case 2:
-                        city_list = get_saved_cities(DATABASE_PATH)
+                case 2:
+                    city_list = get_saved_cities(DATABASE_PATH)
 
-                        if city_list:
-                            print("\nSaved cities:")
-                            chosen_city = forecast_flow(city_list)
-                            if chosen_city is None:
-                                continue
-                            break
-                        else:
-                            print("\nThere are no saved cities.")
-                            input("\nPress Enter to go back to menu")
+                    if city_list:
+                        print("\nSaved cities:")
+                        chosen_city = forecast_flow(city_list)
+                        if chosen_city is None:
+                            continue
+                    else:
+                        print("\nThere are no saved cities.")
 
-                    case 0:
-                        print("Goodbye!")
-                        exit()
+                case 0:
+                    print("\nGoodbye!")
+                    break
 
-                    case _:
-                        print("\nPlease select a valid option!")
-                        input("\nPress Enter to go back to menu")
-                        
-            except ValueError:
-                print("\nYou must inform a number!")
-                input("\nPress Enter to go back to menu")
+                case _:
+                    print("\nPlease select a valid option!")
+
+            input("\nPress Enter to go back to menu")
+                    
+        except ValueError:
+            print("\nYou must inform a number!")
+            input("\nPress Enter to go back to menu")
         
-        input("\nPress Enter to go back to menu")
 
 
 def main_menu() -> None:
@@ -87,7 +77,7 @@ def forecast_flow(city_list: list) -> dict | None:
     print("0 - Back\n")
     
     while True:
-        city_index = input("Choose the city: ")
+        city_index = input("Choose the city: ").strip()
 
         try:
             city_index = int(city_index)
@@ -105,7 +95,7 @@ def forecast_flow(city_list: list) -> dict | None:
     chosen_city = get_chosen_city_data(city_list, city_index)
 
     while True:
-        number_of_days = input("\nInform the number of days for the forecast (1 to 16, 0 to go back): ")
+        number_of_days = input("\nInform the number of days for the forecast (1 to 16, 0 to go back): ").strip()
 
         try:
             number_of_days = int(number_of_days)
@@ -128,6 +118,38 @@ def forecast_flow(city_list: list) -> dict | None:
         print("Could not complete task.")
     return chosen_city
 
+
+def save_city_flow(chosen_city: dict) -> None:
+    while True:
+        wants_to_save = input("Do you wish to register the city? [y/n]: ").strip().lower()
+        if wants_to_save == 'y':
+            save_city(chosen_city, DATABASE_PATH)
+            break
+        elif wants_to_save == 'n':
+            break
+        else:
+            print('\nPlease answer with "y" for yes or "n" for no.\n')
+
+
+def search_city_flow() -> list | None:
+    city_name = input('\n0 - Back\nInform the name of the city: ').strip()
+    if city_name == "0":
+        return None
+    
+    city_list = get_city_list(city_name)
+    
+    if type(city_list) == list:
+        return city_list
+    
+    elif city_list:
+        print(city_list)
+        
+    else:
+        print(f'No results have been found for "{city_name}".\n')
+        
+    input("\nPress Enter to go back to menu")
+    return None
+    
 
 if __name__ == '__main__':
     main()
