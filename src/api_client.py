@@ -47,7 +47,6 @@ def fetch_response(url: str, params: dict) -> dict | str:
     try:
         response = requests.get(url, params=params, timeout=5)
         response.raise_for_status()
-        print(f"\nStatus code: {response.status_code}")
         return response.json()
     except requests.exceptions.Timeout:
         return "The server took too long."

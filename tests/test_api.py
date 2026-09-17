@@ -141,16 +141,18 @@ def test_format_weather_summary() -> None:
                                      'temperature_2m_max' : [36.4],
                                      'temperature_2m_min' : [20.5],
                                      'precipitation_sum' : [0.1],
-                                     'wind_speed_10m_max' : [26.6]
+                                     'wind_speed_10m_max' : [26.6],
+                                     'wind_direction_10m_dominant' : [None]
                                      },
                            'daily_units': {'time': 'iso8601',
                                            'temperature_2m_max': 'ºC',
                                            'temperature_2m_min': 'ºC',
                                            'precipitation_sum': 'mm',
-                                           'wind_speed_10m_max': 'km/h'
+                                           'wind_speed_10m_max': 'km/h',
+                                           'wind_direction_10m_dominant': 'º'
                                            }
                            }
-    expected_summary = '\nForecast for the day: 2026-09-08\n\nMax Temperature: 36.4 ºC\nMin Temperature: 20.5 ºC\nPrecipitation: 0.1 mm\nWind Speed: 26.6 km/h\n'
+    expected_summary = '\nForecast for the day: 2026-09-08\n\nMax Temperature: 36.4 ºC\nMin Temperature: 20.5 ºC\nPrecipitation: 0.1 mm\nWind Speed: 26.6 km/h\nWind Direction: N/A\n'
     assert formatter.format_weather_summary(response_json) == expected_summary
 
  

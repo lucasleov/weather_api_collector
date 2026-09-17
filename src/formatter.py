@@ -19,8 +19,12 @@ def format_weather_summary(response_json: dict) -> str:
     for day in parsed_data:
         weather_summary += f'\nForecast for the day: {day["time"]}\n'
         for data, value in day.items():
+            if value is None:
+                value = "N/A"
+            else:
+                value = f'{value} {unit_list[data]}'
             if data != 'time':
-                weather_summary += f"\n{get_data_name(data)}: {value} {unit_list[data]}"
+                weather_summary += f"\n{get_data_name(data)}: {value}"
         weather_summary += "\n"
 
     return weather_summary

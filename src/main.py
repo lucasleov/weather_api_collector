@@ -18,47 +18,37 @@ def main() -> None:
     while True:
         main_menu()
 
-        choice = input("Select an option: ").strip()
+        choice = get_valid_choice("Select an option: ", range(3))
 
-        try:
-            choice = int(choice)
+        match choice:
 
-            match choice:
+            case 1:
+                city_list = search_city_flow()
 
-                case 1:
-                    city_list = search_city_flow()
-
-                    if city_list:
-                        chosen_city = forecast_flow(city_list)
-                        if chosen_city is None:
-                            continue
-                        save_city_flow(chosen_city)
-                    else:
+                if city_list:
+                    chosen_city = forecast_flow(city_list)
+                    if chosen_city is None:
                         continue
+                    save_city_flow(chosen_city)
+                else:
+                    continue
 
-                case 2:
-                    city_list = get_saved_cities(DATABASE_PATH)
+            case 2:
+                city_list = get_saved_cities(DATABASE_PATH)
 
-                    if city_list:
-                        print("\nSaved cities:")
-                        chosen_city = forecast_flow(city_list)
-                        if chosen_city is None:
-                            continue
-                    else:
-                        print("\nThere are no saved cities.")
+                if city_list:
+                    print("\nSaved cities:")
+                    chosen_city = forecast_flow(city_list)
+                    if chosen_city is None:
+                        continue
+                else:
+                    print("\nThere are no saved cities.")
 
-                case 0:
-                    print("\nGoodbye!")
-                    break
+            case 0:
+                print("\nGoodbye!")
+                break
 
-                case _:
-                    print("\nPlease select a valid option!")
-
-            input("\nPress Enter to go back to menu")
-                    
-        except ValueError:
-            print("\nYou must inform a number!")
-            input("\nPress Enter to go back to menu")
+        input("\nPress Enter to go back to menu")
         
 
 
@@ -75,38 +65,16 @@ def forecast_flow(city_list: list) -> dict | None:
     print_city_list(city_list)
 
     print("0 - Back\n")
-    
-    while True:
-        city_index = input("Choose the city: ").strip()
 
-        try:
-            city_index = int(city_index)
-            if city_index in range(1, len(city_list)+1):
-                city_index -= 1
-                break
-            elif city_index == 0:
-                return None
-            else:
-                print("\nPlease select a valid option!")
-        except ValueError:
-            print("\nYou must inform a number!")
-            
-    
-    chosen_city = get_chosen_city_data(city_list, city_index)
+    city_index = get_valid_choice("Choose the city: ", range(len(city_list)+1))
+    if city_index == 0:
+        return None
 
-    while True:
-        number_of_days = input("\nInform the number of days for the forecast (1 to 16, 0 to go back): ").strip()
+    chosen_city = get_chosen_city_data(city_list, city_index-1)
 
-        try:
-            number_of_days = int(number_of_days)
-            if number_of_days in range(1, 17):
-                break
-            elif number_of_days == 0:
-                return None
-            else:
-                print("\nPlease inform a valid number")
-        except ValueError:
-            print("\nYou must inform a number!")
+    number_of_days = get_valid_choice("\nInform the number of days for the forecast (1 to 16, 0 to go back): ", range(17))
+    if number_of_days == 0:
+        return None
     
     response_json = get_weather_forecast(chosen_city, number_of_days)
 
@@ -121,7 +89,7 @@ def forecast_flow(city_list: list) -> dict | None:
 
 def save_city_flow(chosen_city: dict) -> None:
     while True:
-        wants_to_save = input("Do you wish to register the city? [y/n]: ").strip().lower()
+        wants_to_save = input("Do you wish to save the city? [y/n]: ").strip().lower()
         if wants_to_save == 'y':
             save_city(chosen_city, DATABASE_PATH)
             break
@@ -149,6 +117,21 @@ def search_city_flow() -> list | None:
         
     input("\nPress Enter to go back to menu")
     return None
+
+
+def get_valid_choice(message: str, choice_range: range) -> int:
+    while True:
+        chosen_option = input(message).strip()
+
+        try:
+            chosen_option = int(chosen_option)
+            if chosen_option in choice_range:
+                return chosen_option
+            else:
+                print("\nPlease inform a valid option!")
+        except ValueError:
+            print("\nYou must inform a number!")
+        
     
 
 if __name__ == '__main__':
